@@ -64,134 +64,101 @@ function PreviewBill() {
     0
   );
 
-  const downloadPDF = () => {
-    const element = document.getElementById('billPreview');
-    const buttons = element.querySelectorAll('.no-pdf');
+const downloadPDF = () => {
+  const element = document.getElementById("billPreview");
 
-    // Hide buttons
-    buttons.forEach(btn => btn.style.display = 'none');
-
-    // Force A4 size
-    element.style.width = '210mm';
-    element.style.minHeight = '297mm';
-    element.style.padding = '10mm';
-    element.style.boxSizing = 'border-box';
-    element.style.background = 'white';
-    element.style.margin = '0 auto';
-    element.style.border = '2px solid black';
-
-    const opt = {
-      margin: [0, 0, 0, 0],
-      filename: `Invoice_${billData.invoiceno}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(element).save().then(() => {
-      // Restore after PDF
-      buttons.forEach(btn => btn.style.display = 'block');
-      element.style.width = '';
-      element.style.minHeight = '';
-      element.style.padding = '';
-      element.style.background = '';
-      element.style.margin = '';
-      element.style.border = '';
-    });
+  const opt = {
+    margin: 0,
+    filename: `Invoice_${billData.customerName}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, scrollY: 0 },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
   };
 
+  html2pdf().set(opt).from(element).save();
+};
+
+
   return (
-   <div className="container-fluid preview-bill-container d-flex justify-content-center">
-  {/* Outer container for PDF scaling */}
-  <div className="bill-outer p-2" id="billPreview" style={{ backgroundColor: "white" }}>
-    
-    {/* Inner container with border for actual bill */}
-    <div className="bill-inner p-4" style={{ border: "2px solid black", width: "100%", boxSizing: "border-box" }}>
-      
-      {/* Header */}
-      <div className="bill-header mb-4 text-center">
-        <h1 className='ownerhead'>SHRI SWAMI SAMARTHA PRINTERS</h1>
-        <p className='subheading1'>All types of printing & Binding work done here</p>
-        <p className='subheading2'>We supply all types of industrial stationary</p>
-        <p className='address'>Address : PIMPRI-CHINCHWAD PUNE-411034</p>
+    <div id="billPreview" className="container-fluid preview-bill-container d-flex flex-column align-items-center">
+      {/* Inner Bill Content */}
+      <div className="bill-inner mt-3" style={{ border: "2px solid black", width: "100%", backgroundColor: "white" }}>
+        
+        <div className="bill-header mb-4 text-center">
+          <h1 className='ownerhead mt-4'>SHRI SWAMI SAMARTHA PRINTERS</h1>
+          <p className='subheading1'>All types of printing & Binding work done here</p>
+          <p className='subheading2'>We supply all types of industrial stationary</p>
+          <p className='address'>Address : PIMPRI-CHINCHWAD PUNE-411034</p>
 
-        {/* Customer Info with border */}
-        <div className='company-info d-flex justify-content-between mt-3 p-2' style={{ border: "2px solid black" }}>
-          <div>
-            <p style={{ fontWeight: "bold" }}>To :</p>
-            <p>{billData.customerName}</p>
-          </div>
-          <div className='text-center'>
-            <p style={{ backgroundColor: "black", color: "white", fontWeight: "bold", fontSize: "1.4rem" }}>INVOICE</p>
-            <p>INVOICE NO : {billData.invoiceno}</p>
-            <p style={{ fontWeight: "bold" }}>Date : {billData.date}</p>
+          <div className='company-info d-flex justify-content-between mt-3 p-4'>
+            <div style={{display:"flex"}}>
+              <p style={{ fontWeight: "bold", width:"50px" }}>To :</p>
+              <p style={{ width:"350px", borderRight:"2px solid black" }}>{billData.customerName}</p>
+            </div>
+            <div className='text-center'>
+              <p style={{ backgroundColor: "black", color: "white", fontWeight: "bold", fontSize: "1.4rem" }}>INVOICE</p>
+              <p>INVOICE NO : {billData.invoiceno}</p>
+              <p style={{ fontWeight: "bold" }}>Date : {billData.date}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Product Table */}
-      <table className="table table-striped text-center border">
-        <thead className="table-dark">
-          <tr>
-            <th>No.</th>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Rate</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {billData.products.length > 0 ? billData.products.map((product, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{product.productname}</td>
-              <td>{product.quantity}</td>
-              <td>{product.price}</td>
-              <td>{product.total}</td>
-            </tr>
-          )) : (
+        <table className="table table-striped text-center border">
+          <thead className="table-dark">
             <tr>
-              <td colSpan={5}>No products added</td>
+              <th>No.</th>
+              <th>Description</th>
+              <th>Quantity</th>
+              <th>Rate</th>
+              <th>Amount</th>
             </tr>
-          )}
-          {billData.products.length > 0 && (
-            <tr className="table-secondary">
-              <td colSpan={4} style={{ fontWeight: "bold" }}>TOTAL</td>
-              <td style={{ fontWeight: "bold" }}>{grandTotal}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {billData.products.length > 0 ? billData.products.map((product, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{product.productname}</td>
+                <td>{product.quantity}</td>
+                <td>{product.price}</td>
+                <td>{product.total}</td>
+              </tr>
+            )) : (
+              <tr>
+                <td colSpan={5}>No products added</td>
+              </tr>
+            )}
+            {billData.products.length > 0 && (
+              <tr className="table-secondary">
+                <td colSpan={4} style={{ fontWeight: "bold" }}>TOTAL</td>
+                <td style={{ fontWeight: "bold" }}>{grandTotal}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {/* Grand Total in Words */}
-      <div className="grand-total-words text-start mb-4" style={{ fontWeight: "bold" }}>
-        <p>Rupees in word: {numberToWords(grandTotal)} Rupees Only</p>
-      </div>
+        <div className="grand-total-words text-start mb-4 ms-3" style={{ fontWeight: "bold" }}>
+          <p>Rupees in word: {numberToWords(grandTotal)} Rupees Only</p>
+        </div>
 
-      {/* Footer */}
-      <div className="bill-footer mt-5 text-center border-top pt-3">
-        <p style={{ fontWeight: "bold" }}>For, SHRI SWAMI SAMARTHA PRINTERS</p>
-        <div className="row mt-5">
-          <div className="col text-start">
-            <p>Receiver's Signature</p>
-          </div>
-          <div className="col text-end">
-            <p>Signature</p>
+        <div className="bill-footer mt-5 text-center border-top pt-3">
+          <p style={{ fontWeight: "bold", marginLeft:"45%" }}>For, SHRI SWAMI SAMARTHA PRINTERS</p>
+          <div className="row mt-5">
+            <div className="col text-start">
+              <p className='ms-3'>Receiver's Signature</p>
+            </div>
+            <div className="col text-end">
+              <p className='me-5'>Signature</p>
+            </div>
           </div>
         </div>
       </div>
 
-    </div> {/* End bill-inner */}
-
-    {/* Buttons outside the border */}
-    <div className="d-flex justify-content-center mt-4 no-pdf">
-      <button className="btn btn-primary me-2" onClick={downloadPDF}>Download PDF</button>
-      <button className="btn btn-warning" onClick={() => navigate('/')}>Back</button>
+      {/* These buttons will not appear in the PDF */}
+      <div className="d-flex justify-content-center mt-4 no-pdf">
+        <button className="btn btn-primary me-2" onClick={downloadPDF}>Download PDF</button>
+        <button className="btn btn-warning" onClick={() => navigate('/')}>Back</button>
+      </div>
     </div>
-
-  </div>
-</div>
-
   );
 }
 

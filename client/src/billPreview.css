@@ -44,8 +44,14 @@ width:100%;
 }
 
 .company-info{
-    /* background-color:red; */
+   
     display: flex;
+    /* border-top: 2px solid black;
+     border-bottom: 2px solid black; */
+     border:2px solid black;
+     margin: 0 10px;
+     height: 150px;
+
 }
 
 .companyname-cont{
@@ -75,3 +81,51 @@ background-color: red;
 border: 2px solid bl;
 
 } */
+
+
+/* Hide buttons only during PDF generation */
+@media print {
+  .no-pdf {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+/* ====== A4 Layout and Scaling ====== */
+#billPreview {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  margin: 0 auto;
+  padding: 10mm;
+  box-sizing: border-box;
+  border: 2px solid black;
+  overflow: hidden;
+  transform-origin: top center;
+}
+
+/* Keep perfect A4 ratio on mobile */
+@media screen and (max-width: 768px) {
+  #billPreview {
+    width: 100%;
+    transform: scale(0.9);
+    transform-origin: top center;
+    padding: 10px;
+    border: 1px solid black;
+  }
+}
+
+/* Hide no-pdf buttons when generating PDF */
+@media print {
+  .no-pdf {
+    display: none !important;
+  }
+
+  #billPreview {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 auto !important;
+    border: 2px solid black !important;
+    padding: 10mm !important;
+  }
+}
