@@ -67,16 +67,34 @@ function PreviewBill() {
 const downloadPDF = () => {
   const element = document.getElementById("billPreview");
 
+  // Temporarily set A4 styling before generating PDF
+  element.style.width = "210mm";
+  element.style.minHeight = "297mm";
+  element.style.transform = "none";
+  element.style.padding = "10mm";
+  element.style.border = "2px solid black";
+  element.style.margin = "0 auto";
+
   const opt = {
     margin: 0,
     filename: `Invoice_${billData.customerName}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2, scrollY: 0 },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+    html2canvas: {
+      scale: 2,
+      scrollY: 0,
+      useCORS: true, // helps with image clarity
+      windowWidth: 1200, // force consistent width
+    },
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait",
+    },
   };
 
   html2pdf().set(opt).from(element).save();
 };
+
 
 
   return (
